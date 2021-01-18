@@ -2,15 +2,20 @@
   <form @submit.prevent="procesarFormulario">
     <InputVue :tarea="tarea" />
   </form>
-  <p>{{tarea}}</p>
+  <hr>
+  <ListasTareasVue/>
 </template>
 
 <script>
 import InputVue from '../components/Input.vue'
+import {mapActions} from "vuex"
+import ListasTareasVue from '../components/ListasTareas.vue';
+const shortid = require("shortid");
 export default {
   name: 'Home',
   components: {
-    InputVue
+    InputVue,
+    ListasTareasVue
   },
   data() {
     return {
@@ -24,12 +29,20 @@ export default {
     }
   },
   methods: {
+    ...mapActions(["setTareas"]),
     procesarFormulario() {
         console.log(this.tarea)
         if(this.tarea.nombre.trim === ""){
           return
         }
+        // generar id
+        this.tarea.id = shortid.generate();
+        
+        // 
+        this.setTareas(this.tarea);
+
         this.tarea={
+        id:"",
         nombre:"",
         categorias: [],
         estado:"",
