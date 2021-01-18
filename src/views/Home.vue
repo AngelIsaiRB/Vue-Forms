@@ -59,6 +59,7 @@
       <button
         class="btn btn-dark mt-2 btn-block"
         type="submit"
+        :disabled="habilitarButton"
       >
       Procesar
       </button>
@@ -87,6 +88,20 @@ export default {
   methods: {
     procesarFormulario() {
         console.log(this.tarea)
+        if(this.tarea.nombre.trim === ""){
+          return
+        }
+        this.tarea={
+        nombre:"",
+        categorias: [],
+        estado:"",
+        numero:0
+      }
+    }
+  },
+  computed: {
+    habilitarButton() {
+      return this.tarea.nombre.trim() === "" ? true :false 
     }
   },
 }
