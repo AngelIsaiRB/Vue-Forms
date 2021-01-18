@@ -25,6 +25,17 @@
               <th >{{item.numero}}</th>
               <th >
                   <button @click="deleteTareas(item.id)" class="btn btn-danger btn-sm">eliminar</button>
+                  <router-link
+                    class="btn btn-warning ml-2 btn-sm"
+                    :to="{
+                        name : 'Editar',
+                        params:{
+                            id: item.id,
+                        }
+                    }"
+                    >
+                    Editar
+                  </router-link>
               </th>
           </tr>
       </tbody>
