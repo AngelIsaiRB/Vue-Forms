@@ -3,7 +3,7 @@ import router from '../router'
 
 export default createStore({
   state: {
-    tareas:[],
+    tareas: [],
     tarea: {
       id:"",
       nombre:"",
@@ -13,12 +13,12 @@ export default createStore({
     }
   },
   mutations: {
-    cargar(state, payload){
-      state.tareas = payload
+    // importante error al renderizar si no cumple con la estrctura de "tarea" cuidado problema no aqui si no cuando se imprime la tabla 
+    cargar(state, payload) {
+     state.tareas = [...state.tareas, ...payload]
     },
     set(state, payload){
       state.tareas.push(payload)
-      
     },
     eliminar(state, payload){
       state.tareas = state.tareas.filter((item) => item.id !== payload )
@@ -38,9 +38,21 @@ export default createStore({
     }
   },
   actions: {
-    cargarLocalStorage({commit}){
-      
-    },
+    async cargarLocalStorage({commit}){
+      try {
+        const res = await fetch('https://vue-exmpls-default-rtdb.firebaseio.com/tareas.json')
+        const dataDB = await res.json()
+        const arrayTareas = []
+        for (let id in dataDB){
+          arrayTareas.push(dataDB[id])
+        }
+        console.log(arrayTareas)
+        commit('cargar', arrayTareas)
+
+      } catch (error) {
+        console.log(error)
+      }
+    },    
     async setTareas({commit},tarea){
       try {
         const res = await fetch(`https://vue-exmpls-default-rtdb.firebaseio.com/tareas/${tarea.id}.json`, {
