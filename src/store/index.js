@@ -70,8 +70,15 @@ export default createStore({
         console.log(error)
       }
     },
-    deleteTareas({commit}, id){
-      commit("eliminar", id);
+    async deleteTareas({commit}, id){
+      try {
+        await fetch(`https://vue-exmpls-default-rtdb.firebaseio.com/tareas/${id}.json`,{
+          method: "DELETE",
+        });
+        commit("eliminar", id);
+      } catch (error) {
+        
+      }
     },
     setTarea({commit}, id ){
       commit("tarea", id)
