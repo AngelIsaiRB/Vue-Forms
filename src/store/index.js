@@ -10,9 +10,14 @@ export default createStore({
       categorias: [],
       estado:"",
       numero:0
-    }
+    },
+    user: null
+
   },
   mutations: {
+    setUser(state, payload){
+      state.user=payload
+    },
     // importante error al renderizar si no cumple con la estrctura de "tarea" cuidado problema no aqui si no cuando se imprime la tabla 
     cargar(state, payload) {
      state.tareas = [...state.tareas, ...payload]
@@ -38,6 +43,9 @@ export default createStore({
     }
   },
   actions: {
+    async registrarUsuario({commit}, user){
+      console.log(user)
+    },
     async cargarLocalStorage({commit}){
       try {
         const res = await fetch('https://vue-exmpls-default-rtdb.firebaseio.com/tareas.json')
