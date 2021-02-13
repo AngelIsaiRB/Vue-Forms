@@ -54,13 +54,39 @@ export default createStore({
         })
         const userDB =await  res.json();
         console.log(userDB)
+        if(userDB.error){
+          console.log(userDB.error)
+          return 
+        }
+        commit("setUser", userDB)
+        router.push("/")
       } catch (error) {
         console.log(error)
       }
     },
-    async cargarLocalStorage({commit}){
+    async LoginUser({commit}, user){
       try {
-        const res = await fetch('https://vue-exmpls-default-rtdb.firebaseio.com/tareas.json')
+        const res = await fetch("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAnoPbZNMPUI0IpbCliteX2v4Wg3baSAwE",{
+        method: "POST",
+        body: JSON.stringify({
+          ...user,
+          returnSecureToken:true
+        })
+      })
+      const userDB = await res.json();
+      console.log(userDB)
+      if (user.error) {
+        console.log(userDB.error)
+      }
+      commit("setUser", userDB)
+      router.push("/")
+      } catch (error) {
+        
+      }
+    },
+    async cargarLocalStorage({commit,state}){
+      try {
+        const res = await fetch(`https://vue-exmpls-default-rtdb.firebaseio.com/tareas/${state.user.localId}.json?auth=${state.user.idToken}`)
         const dataDB = await res.json()
         const arrayTareas = []
         for (let id in dataDB){
@@ -73,9 +99,9 @@ export default createStore({
         console.log(error)
       }
     },    
-    async setTareas({commit},tarea){
+    async setTareas({commit,state},tarea){
       try {
-        const res = await fetch(`https://vue-exmpls-default-rtdb.firebaseio.com/tareas/${tarea.id}.json`, {
+        const res = await fetch(`https://vue-exmpls-default-rtdb.firebaseio.com/tareas/${state.user.localId}/${tarea.id}.json?auth=${state.user.idToken}`, {
           method: "PUT",
           body: JSON.stringify(tarea),
           headers : {
@@ -90,9 +116,9 @@ export default createStore({
         console.log(error)
       }
     },
-    async deleteTareas({commit}, id){
+    async deleteTareas({commit,state}, id){
       try {
-        await fetch(`https://vue-exmpls-default-rtdb.firebaseio.com/tareas/${id}.json`,{
+        await fetch(`https://vue-exmpls-default-rtdb.firebaseio.com/tareas/${state.user.localId}/${id}.json?auth=${state.user.idToken}`,{
           method: "DELETE",
         });
         commit("eliminar", id);
@@ -103,9 +129,9 @@ export default createStore({
     setTarea({commit}, id ){
       commit("tarea", id)
     },
-    async updateTarea({commit}, tarea){
+    async updateTarea({commit,state}, tarea){
       try {
-        const resp = await fetch(`https://vue-exmpls-default-rtdb.firebaseio.com/tareas/${tarea.id}.json`,{
+        const resp = await fetch(`https://vue-exmpls-default-rtdb.firebaseio.com/tareas/${state.user.localId}/${tarea.id}.json?auth=${state.user.idToken}`,{
           method: "PATCH",
           body: JSON.stringify(tarea),          
         })
