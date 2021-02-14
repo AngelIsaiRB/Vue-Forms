@@ -43,6 +43,10 @@ export default createStore({
     }
   },
   actions: {
+    cerrarSesion({commit}){
+      commit("setUser",null)
+      router.push("/login")
+    },
     async registrarUsuario({commit}, user){
       try {
         const res = await fetch("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAnoPbZNMPUI0IpbCliteX2v4Wg3baSAwE",{
@@ -141,6 +145,11 @@ export default createStore({
       } catch (error) {
         console.log(error)
       }
+    }
+  },
+  getters:{
+    usuarioAutenticado(state){
+      return !!state.user
     }
   },
   modules: {
