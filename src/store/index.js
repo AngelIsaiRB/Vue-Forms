@@ -46,6 +46,7 @@ export default createStore({
     cerrarSesion({commit}){
       commit("setUser",null)
       router.push("/login")
+      localStorage.removeItem("usuario")
     },
     async registrarUsuario({commit}, user){
       try {
@@ -64,6 +65,7 @@ export default createStore({
         }
         commit("setUser", userDB)
         router.push("/")
+        localStorage.setItem("usuario", JSON.stringify(userDB))
       } catch (error) {
         console.log(error)
       }
@@ -84,11 +86,18 @@ export default createStore({
       }
       commit("setUser", userDB)
       router.push("/")
+      localStorage.setItem("usuario", JSON.stringify(userDB))
       } catch (error) {
         
       }
     },
     async cargarLocalStorage({commit,state}){
+      if(localStorage.getItem("usuario")){
+        commit("setUser",JSON.parse(localStorage.getItem("usuario")))
+      }
+      else{
+        return commit("setUser",null)
+      }
       try {
         const res = await fetch(`https://vue-exmpls-default-rtdb.firebaseio.com/tareas/${state.user.localId}.json?auth=${state.user.idToken}`)
         const dataDB = await res.json()
