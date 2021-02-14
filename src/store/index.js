@@ -20,7 +20,7 @@ export default createStore({
     },
     // importante error al renderizar si no cumple con la estrctura de "tarea" cuidado problema no aqui si no cuando se imprime la tabla 
     cargar(state, payload) {
-     state.tareas = [...state.tareas, ...payload]
+     state.tareas = [ ...payload]
     },
     set(state, payload){
       state.tareas.push(payload)
